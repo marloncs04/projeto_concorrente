@@ -1,5 +1,7 @@
 package projeto_concorrente;
 
+import javax.swing.JLabel;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -8,8 +10,14 @@ import javax.swing.table.DefaultTableModel;
  */
 public class Panel extends javax.swing.JFrame {
 
+    private Numbers numbers;
+
     public Panel() {
         initComponents();
+        setLocationRelativeTo(null);
+        DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
+        centerRenderer.setHorizontalAlignment(JLabel.CENTER);
+        Table.getColumnModel().getColumn(0).setCellRenderer(centerRenderer);
     }
 
     @SuppressWarnings("unchecked")
@@ -96,17 +104,20 @@ public class Panel extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void radomActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_radomActionPerformed
-        Numbers numbers = new Numbers(Convert.converteInt(this.max.getText()));
-        numbers.random();
-        
-        DefaultTableModel row = (DefaultTableModel) this.Table.getModel();
+    private void refresh() {
+        DefaultTableModel table = (DefaultTableModel) this.Table.getModel();
+        table.setNumRows(0);
         String[] str = new String[1];
-        for(int i: numbers.getVector()){
+        for (int i : this.numbers.getVector()) {
             str[0] = " " + i + " ";
-            row.addRow(str);
+            table.addRow(str);
         }
-
+    }
+    private void radomActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_radomActionPerformed
+        this.numbers = null;
+        this.numbers = new Numbers(Convert.converteInt(this.max.getText()));
+        this.numbers.random();
+        this.refresh();
     }//GEN-LAST:event_radomActionPerformed
 
     /**
