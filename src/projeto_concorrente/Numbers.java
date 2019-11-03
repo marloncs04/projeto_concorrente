@@ -4,7 +4,7 @@ package projeto_concorrente;
  *
  * @author genilton
  */
-public class Numbers implements Runnable {
+public class Numbers{
 
     private int max;
     private int vector[];
@@ -49,44 +49,5 @@ public class Numbers implements Runnable {
         for (int i = 0; i < this.max; i++) {
             this.vector[i] = (int) (Math.random() * this.max);
         }
-    }
-
-    public double insertionSort() {
-        int key, i, j;
-
-        double startTime = System.currentTimeMillis();
-
-        for (j = 1; j < this.max; j++) {
-            key = this.vector[j];
-            for (i = j - 1; (i >= 0) && (this.vector[i] > key); i--) {
-                this.vector[i + 1] = this.vector[i];
-            }
-            this.vector[i + 1] = key;
-        }
-        double endTime = System.currentTimeMillis();
-
-        return (endTime - startTime);
-    }
-
-    @Override
-    public void run() {
-        this.insertionSortThread();
-    }
-
-    public void insertionSortThread() {
-        int key, i, j;
-
-        for (j = this.fist + 1; j <= this.last; j++) {
-            key = this.vector[j];
-            for (i = j - 1; (i >= this.fist) && (this.vector[i] > key); i--) {
-                this.vector[i + 1] = this.vector[i];
-            }
-            this.vector[i + 1] = key;
-        }
-//        System.err.print(Thread.currentThread().getName() + ": ");
-//        for (int x = this.fist; x <= this.last; x++) {
-//            System.err.print(" " + this.vector[x] + ",");
-//        }
-//        System.err.println("");
     }
 }

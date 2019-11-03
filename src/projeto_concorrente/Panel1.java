@@ -1,6 +1,5 @@
 package projeto_concorrente;
 
-import java.util.Arrays;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableCellRenderer;
@@ -10,18 +9,20 @@ import javax.swing.table.DefaultTableModel;
  *
  * @author genilton
  */
-public class Panel extends javax.swing.JFrame {
+public class Panel1 extends javax.swing.JFrame {
 
     private Numbers numbers;
-    Numbers sortNumbers;
+    private Numbers sortNumbers;
+    public static double timer;
 
-    public Panel() {
+    public Panel1() {
         initComponents();
         setLocationRelativeTo(null);
         DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
         centerRenderer.setHorizontalAlignment(JLabel.CENTER);
         Table.getColumnModel().getColumn(0).setCellRenderer(centerRenderer);
         TableSort.getColumnModel().getColumn(0).setCellRenderer(centerRenderer);
+        Panel1.timer = 0;
     }
 
     @SuppressWarnings("unchecked")
@@ -135,18 +136,21 @@ public class Panel extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(jLabel1)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(max, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(random))
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                        .addComponent(sortS, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(time1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 193, Short.MAX_VALUE))
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                        .addComponent(sortT, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(time2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 195, Short.MAX_VALUE)))
-                .addContainerGap(13, Short.MAX_VALUE))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addComponent(jLabel1)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(max, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGap(18, 18, 18)
+                                        .addComponent(random))
+                                    .addComponent(sortS, javax.swing.GroupLayout.PREFERRED_SIZE, 193, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(sortT, javax.swing.GroupLayout.PREFERRED_SIZE, 195, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGap(0, 1, Short.MAX_VALUE))
+                            .addComponent(time2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addContainerGap())
+                    .addComponent(time1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -181,13 +185,14 @@ public class Panel extends javax.swing.JFrame {
     private void sortSActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_sortSActionPerformed
         this.sortNumbers = null;
         this.sortNumbers = new Numbers(this.numbers);
-        this.time1.setText("Tempo Sequencial: " + this.sortNumbers.insertionSort() + "ms");
+        this.time1.setText("Tempo Sequencial: " + new InsertSort(this.sortNumbers).insertionSort() + "ms");
         this.refresh();
     }//GEN-LAST:event_sortSActionPerformed
 
     private void sortTActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_sortTActionPerformed
         this.sortNumbers = null;
         this.sortNumbers = new Numbers(this.numbers);
+        Panel1.timer = 0;
         
         int qtdThreads = Convert.converteInt(JOptionPane.showInputDialog("Quantas Threads?"));
         
@@ -195,11 +200,10 @@ public class Panel extends javax.swing.JFrame {
         int fist = 0;
         int last = (this.sortNumbers.getMax()-1)/qtdThreads;
                       
-        System.out.println("Inicio: " + Arrays.toString(this.sortNumbers.getVector()));
         //Inicio
-        double startTime = System.currentTimeMillis();
+        
         for(int i = 0; i < qtdThreads; i++){
-            threads[i] = new Thread(new Numbers( fist, last, this.sortNumbers.getVector()));
+            threads[i] = new Thread(new InsertSort( fist, last, this.sortNumbers));
             threads[i].start();
             fist = last + 1;
             last += (this.sortNumbers.getMax()/qtdThreads);
@@ -211,12 +215,11 @@ public class Panel extends javax.swing.JFrame {
                 System.err.println(ex.getMessage());
             }
         }       
-        new Numbers( 0, this.sortNumbers.getMax()-1, this.sortNumbers.getVector()).insertionSortThread();
-        double endTime = System.currentTimeMillis();
+        new InsertSort( 0, this.sortNumbers.getMax()-1, this.sortNumbers).run();
+        
         //Fim
 
-        System.out.println("Fim: " + Arrays.toString(this.sortNumbers.getVector()));
-        this.time2.setText("Tempo Concorrente: " + (endTime-startTime) + "ms");
+        this.time2.setText("Tempo Concorrente: " + Panel1.timer + "ms");
         this.refresh();
     }//GEN-LAST:event_sortTActionPerformed
 
@@ -238,15 +241,6 @@ public class Panel extends javax.swing.JFrame {
             str[0] = " " + i + " ";
             table.addRow(str);
         }
-    }
-
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String args[]) {
-        java.awt.EventQueue.invokeLater(() -> {
-            new Panel().setVisible(true);
-        });
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
