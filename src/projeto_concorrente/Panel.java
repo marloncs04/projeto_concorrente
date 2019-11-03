@@ -1,6 +1,8 @@
 package projeto_concorrente;
 
+import java.util.Arrays;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 
@@ -118,6 +120,11 @@ public class Panel extends javax.swing.JFrame {
         });
 
         sortT.setText("Ordena Thread");
+        sortT.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                sortTActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -177,6 +184,41 @@ public class Panel extends javax.swing.JFrame {
         this.time1.setText("Tempo Sequencial: " + this.sortNumbers.insertionSort() + "ms");
         this.refresh();
     }//GEN-LAST:event_sortSActionPerformed
+
+    private void sortTActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_sortTActionPerformed
+        this.sortNumbers = null;
+        this.sortNumbers = new Numbers(this.numbers);
+        
+        int qtdThreads = Convert.converteInt(JOptionPane.showInputDialog("Quantas Threads?"));
+        
+        Thread[] threads = new Thread[qtdThreads];
+        int fist = 0;
+        int last = (this.sortNumbers.getMax()-1)/qtdThreads;
+                      
+        System.out.println("Inicio: " + Arrays.toString(this.sortNumbers.getVector()));
+        //Inicio
+        double startTime = System.currentTimeMillis();
+        for(int i = 0; i < qtdThreads; i++){
+            threads[i] = new Thread(new Numbers( fist, last, this.sortNumbers.getVector()));
+            threads[i].start();
+            fist = last + 1;
+            last += (this.sortNumbers.getMax()/qtdThreads);
+        }
+        for(int i = 0; i < qtdThreads; i++){
+            try {
+                threads[i].join();
+            } catch (InterruptedException ex) {
+                System.err.println(ex.getMessage());
+            }
+        }       
+        new Numbers( 0, this.sortNumbers.getMax()-1, this.sortNumbers.getVector()).insertionSortThread();
+        double endTime = System.currentTimeMillis();
+        //Fim
+
+        System.out.println("Fim: " + Arrays.toString(this.sortNumbers.getVector()));
+        this.time2.setText("Tempo Concorrente: " + (endTime-startTime) + "ms");
+        this.refresh();
+    }//GEN-LAST:event_sortTActionPerformed
 
     private void refresh() {
         DefaultTableModel table = (DefaultTableModel) this.Table.getModel();
