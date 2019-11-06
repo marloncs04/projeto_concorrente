@@ -22,10 +22,10 @@ public class InsertSort implements Runnable {
         this.last = last;
     }
 
-    public double insertionSort() {
+    public void insertionSort() {
         int key, i, j;
 
-        double startTime = System.currentTimeMillis();
+        //double startTime = System.currentTimeMillis();
 
         for (j = 1; j < this.max; j++) {
             key = this.vector[j];
@@ -34,22 +34,18 @@ public class InsertSort implements Runnable {
             }
             this.vector[i + 1] = key;
         }
-        double endTime = System.currentTimeMillis();
-
-        return (endTime - startTime);
+        //double endTime = System.currentTimeMillis();
     }
 
     @Override
     public void run() {
-        double timer = this.insertionSortThread();
-        Panel1.timer += timer;
-        Panel2.timer += timer;
+        this.insertionSortThread();
     }
 
-    public double insertionSortThread() {
+    public void insertionSortThread() {
         int key, i, j;
         
-        double startTime = System.currentTimeMillis();
+        //double startTime = System.currentTimeMillis();
         
         for (j = this.fist + 1; j <= this.last; j++) {
             key = this.vector[j];
@@ -59,7 +55,6 @@ public class InsertSort implements Runnable {
             this.vector[i + 1] = key;
         }
         
-        double endTime = System.currentTimeMillis();
-        return (endTime - startTime);
+        //double endTime = System.currentTimeMillis();
     }
 }

@@ -13,7 +13,6 @@ public class Panel1 extends javax.swing.JFrame {
 
     private Numbers numbers;
     private Numbers sortNumbers;
-    public static double timer;
 
     public Panel1() {
         initComponents();
@@ -22,7 +21,6 @@ public class Panel1 extends javax.swing.JFrame {
         centerRenderer.setHorizontalAlignment(JLabel.CENTER);
         Table.getColumnModel().getColumn(0).setCellRenderer(centerRenderer);
         TableSort.getColumnModel().getColumn(0).setCellRenderer(centerRenderer);
-        Panel1.timer = 0;
     }
 
     @SuppressWarnings("unchecked")
@@ -185,14 +183,18 @@ public class Panel1 extends javax.swing.JFrame {
     private void sortSActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_sortSActionPerformed
         this.sortNumbers = null;
         this.sortNumbers = new Numbers(this.numbers);
-        this.time1.setText("Tempo Sequencial: " + new InsertSort(this.sortNumbers).insertionSort() + "ms");
+        
+        double startTime = System.currentTimeMillis();
+        new InsertSort(this.sortNumbers).insertionSort();
+        double endTime = System.currentTimeMillis();
+        
+        this.time1.setText("Tempo Sequencial: " + (endTime-startTime) + "ms");
         this.refresh();
     }//GEN-LAST:event_sortSActionPerformed
 
     private void sortTActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_sortTActionPerformed
         this.sortNumbers = null;
         this.sortNumbers = new Numbers(this.numbers);
-        Panel1.timer = 0;
         
         int qtdThreads = Convert.converteInt(JOptionPane.showInputDialog("Quantas Threads?"));
         
@@ -201,6 +203,7 @@ public class Panel1 extends javax.swing.JFrame {
         int last = (this.sortNumbers.getMax()-1)/qtdThreads;
                       
         //Inicio
+        double startTime = System.currentTimeMillis();
         
         for(int i = 0; i < qtdThreads; i++){
             threads[i] = new Thread(new InsertSort( fist, last, this.sortNumbers));
@@ -217,9 +220,10 @@ public class Panel1 extends javax.swing.JFrame {
         }       
         new InsertSort( 0, this.sortNumbers.getMax()-1, this.sortNumbers).run();
         
+        double endTime = System.currentTimeMillis();
         //Fim
 
-        this.time2.setText("Tempo Concorrente: " + Panel1.timer + "ms");
+        this.time2.setText("Tempo Concorrente: " + (endTime-startTime) + "ms");
         this.refresh();
     }//GEN-LAST:event_sortTActionPerformed
 

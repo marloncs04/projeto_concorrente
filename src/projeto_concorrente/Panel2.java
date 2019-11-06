@@ -13,12 +13,10 @@ public class Panel2 extends javax.swing.JFrame {
 
     private Numbers[] numbers;
     private Numbers[] sortNumbers;
-    public static double timer;
 
     public Panel2() {
         initComponents();
         setLocationRelativeTo(null);
-        Panel2.timer = 0;
     }
 
     @SuppressWarnings("unchecked")
@@ -176,27 +174,36 @@ public class Panel2 extends javax.swing.JFrame {
     }//GEN-LAST:event_randomActionPerformed
 
     private void sortSActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_sortSActionPerformed
-        Panel2.timer = 0;
         this.sortNumbers = null;
         this.sortNumbers = new Numbers[this.numbers.length];
+        
         for (int i = 0; i < this.numbers.length; i++) {
             this.sortNumbers[i] = new Numbers(this.numbers[i]);
-            Panel2.timer += new InsertSort(this.sortNumbers[i]).insertionSort();
         }
+        
+        double startTime = System.currentTimeMillis();        
+        for (int i = 0; i < this.numbers.length; i++) {           
+            new InsertSort(this.sortNumbers[i]).insertionSort();
+        }        
+        double endTime = System.currentTimeMillis();
 
-        this.time1.setText("Tempo Sequencial: " + Panel2.timer + "ms");
+        
+        this.time1.setText("Tempo Sequencial: " + (endTime-startTime) + "ms");
         this.refresh();
     }//GEN-LAST:event_sortSActionPerformed
 
     private void sortTActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_sortTActionPerformed
         Thread[] threads = new Thread[this.numbers.length];
-        Panel2.timer = 0;
 
         this.sortNumbers = null;
         this.sortNumbers = new Numbers[this.numbers.length];
 
         for (int i = 0; i < this.numbers.length; i++) {
             this.sortNumbers[i] = new Numbers(this.numbers[i]);
+        }
+        
+        double startTime = System.currentTimeMillis();        
+        for (int i = 0; i < this.numbers.length; i++) {
             threads[i] = new Thread(new InsertSort(0, this.sortNumbers[i].getMax() - 1, this.sortNumbers[i]));
             threads[i].start();
         }
@@ -207,8 +214,9 @@ public class Panel2 extends javax.swing.JFrame {
                 System.err.println(ex.getMessage());
             }
         }
+        double endTime = System.currentTimeMillis();
         
-        this.time2.setText("Tempo Concorrente: " + Panel2.timer + "ms");
+        this.time2.setText("Tempo Concorrente: " + (endTime-startTime) + "ms");
         this.refresh();
     }//GEN-LAST:event_sortTActionPerformed
 
