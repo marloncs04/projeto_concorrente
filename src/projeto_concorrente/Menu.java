@@ -91,7 +91,8 @@ public class Menu extends javax.swing.JFrame {
                 + "<li>Na parte onde se utiliza thread o vetor e dividido igualmente para as threads.</li>"
                 + "<li>A quantidade de threads e definidas pelo usuario.</li></ul></html>"
                 , "Informações", JOptionPane.INFORMATION_MESSAGE);
-        new Panel1().setVisible(true);        
+        new Panel1().setVisible(true);  
+        dispose();
     }//GEN-LAST:event_test1ActionPerformed
 
     private void test2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_test2ActionPerformed
@@ -101,6 +102,7 @@ public class Menu extends javax.swing.JFrame {
                 + "<li>A quantidade de vetores e definidas pelo usuario.</li></ul></html>"
                 , "Informações", JOptionPane.INFORMATION_MESSAGE);
         new Panel2().setVisible(true);        
+        dispose();
     }//GEN-LAST:event_test2ActionPerformed
 
     public static void main(String args[]) {
